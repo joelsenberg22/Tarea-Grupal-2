@@ -81,3 +81,39 @@ void mostrarDiccionario() {
 }
 
 }
+void actualizarPalabra() {
+    string palabra;
+    cout << "Ingrese la palabra a actualizar: ";
+    cin >> palabra;
+
+    // Convertir la palabra ingresada a minúsculas
+    for (size_t i = 0; i < palabra.length(); ++i) {
+        palabra[i] = tolower(palabra[i]);
+    }
+    
+    map<string, Palabra>::iterator it = diccionario.find(palabra);
+    
+    if (it != diccionario.end()) {
+        cout << "Nueva Traduccion: ";
+        cin.ignore();  // Limpiar el buffer de entrada
+        getline(cin, it->second.traduccion);
+        cout << "Nueva Funcionalidad: ";
+        getline(cin, it->second.funcionalidad);
+        guardarDiccionario();
+        cout << "Palabra actualizada.\n";
+    } else {
+        cout << "Palabra no encontrada.\n";
+    }
+}
+
+void eliminarPalabra() {
+    string palabra;
+    cout << "Ingrese la palabra a eliminar: ";
+    cin >> palabra;
+    if (diccionario.erase(palabra)) {
+        guardarDiccionario();
+        cout << "Palabra eliminada.\n";
+    } else {
+        cout << "Palabra no encontrada.\n";
+    }
+}
