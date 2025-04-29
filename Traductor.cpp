@@ -23,7 +23,7 @@ void limpiarConsola() {
     system("cls"); 
 }
 
-// Función para cargar palabras del archivo
+// Funciï¿½n para cargar palabras del archivo
 void cargarDiccionario() {
     diccionario.clear();
 	ifstream archivo(archivoDiccionario.c_str());
@@ -43,7 +43,7 @@ void cargarDiccionario() {
     archivo.close();
 }
 
-// Función para guardar palabras al archivo
+// Funciï¿½n para guardar palabras al archivo
 void guardarDiccionario() {
     ofstream archivo(archivoDiccionario.c_str(), ios::trunc);  // Truncar el archivo antes de escribir
     if (!archivo.is_open()) {
@@ -55,4 +55,29 @@ void guardarDiccionario() {
         archivo << it->first << "|" << it->second.traduccion << "|" << it->second.funcionalidad << "\n";
     }
     archivo.close();
+}
+// CRUD
+void agregarPalabra() {
+    string palabra, traduccion, funcionalidad;
+    cout << "Ingrese Palabra: ";
+    cin >> palabra;
+    cout << "Ingrese Traduccion: ";
+    cin.ignore();
+    getline(cin, traduccion);
+    cout << "Ingrese Funcionalidad: ";
+    getline(cin, funcionalidad);
+
+    diccionario[palabra] = {traduccion, funcionalidad};
+    guardarDiccionario();
+    cout << "Palabra agregada correctamente.\n";
+}
+
+void mostrarDiccionario() {
+    cout << "\nListado de Palabras:\n";
+   for (map<string, Palabra>::iterator it = diccionario.begin(); it != diccionario.end(); ++it) {
+    cout << "Palabra: " << it->first 
+         << ", Traduccion: " << it->second.traduccion
+         << ", Funcionalidad: " << it->second.funcionalidad << endl;
+}
+
 }
