@@ -117,3 +117,119 @@ void eliminarPalabra() {
         cout << "Palabra no encontrada.\n";
     }
 }
+void traducirCodigo() {
+    cin.ignore();
+    cout << "Ingrese el codigo C++ (finalice con una linea que contenga solo 'FIN'):\n";
+    vector<string> codigoOriginal;
+    string linea;
+    
+    // Lectura de código hasta encontrar "fin"
+    while (getline(cin, linea)) {
+        // Convertir la línea a minúsculas antes de cualquier cosa
+        for (size_t i = 0; i < linea.length(); ++i) {
+            linea[i] = tolower(linea[i]);
+        }
+
+        if (linea == "fin") break; // terminamos la lectura al encontrar "fin"
+        codigoOriginal.push_back(linea);
+    }
+
+    cout << "\n=== Codigo Traducido ===\n";
+
+    // Procesar y traducir el código línea por línea
+    bool dentroIfElse = false;
+    for (size_t i = 0; i < codigoOriginal.size(); ++i) {
+        string linea = codigoOriginal[i];
+        stringstream ss(linea);
+        string palabra;
+
+        // Detectar las estructuras de control e imprimir la traducción
+        bool esEstructura = false;
+
+        while (ss >> palabra) {
+            string palabraOriginal = palabra;
+
+            // Quitar paréntesis y signos si hay
+            string limpio;
+            for (size_t j = 0; j < palabra.length(); ++j) {
+                if (isalnum(palabra[j])) limpio += palabra[j];
+            }
+
+            // Buscar traducción en el diccionario
+            if (diccionario.find(limpio) != diccionario.end()) {
+                cout << diccionario[limpio].traduccion;
+            } else {
+                cout << palabraOriginal;
+            }
+            cout << " ";
+
+            // Detectar las estructuras de control
+            if (linea.find("if") != string::npos) {
+                esEstructura = true;
+                if (dentroIfElse == false) {
+                    cout << "inicio si ";
+                    dentroIfElse = true;
+                }
+            } else if (linea.find("else") != string::npos) {
+                esEstructura = true;
+                if (dentroIfElse) {
+                    cout << "fin si ";
+                }
+                cout << "inicio entonces ";
+                dentroIfElse = true;
+            }
+        }
+
+        // Imprimir el cierre de estructuras
+        size_t posFin = linea.find('}');  // Buscar fin de llave
+        if (posFin != string::npos) {
+            if (dentroIfElse) {
+                if (linea.find("if") != string::npos) {
+                    cout << "fin si ";
+                } else if (linea.find("else") != string::npos) {
+                    cout << "fin entonces ";
+                }
+                dentroIfElse = false;
+            }
+        }
+
+        cout << endl;
+    }
+}
+
+
+// Menú principal
+void menu() {
+    int opcion;
+    do {
+        cout << "\n--- Proyecto Traductor ---\n";
+        cout << "1. Agregar palabra\n";
+        cout << "2. Mostrar palabras\n";
+        cout << "3. Actualizar palabra\n";
+        cout << "4. Eliminar palabra\n";
+        cout << "5. Traducir Codigo\n";
+        cout << "0. Salir\n";
+        cout << "Seleccione una opcion: ";
+        cin >> opcion;
+
+        switch (opcion) {
+            case 1: limpiarConsola(); agregarPalabra(); break;
+            case 2: limpiarConsola(); mostrarDiccionario(); break;
+            case 3: limpiarConsola(); actualizarPalabra(); break;
+            case 4: limpiarConsola(); eliminarPalabra(); break;
+            case 5: limpiarConsola(); traducirCodigo(); break;
+            case 0: cout << "Saliendo...\n"; break;
+            default: cout << "Opcion invalida\n"; break;
+            
+        }
+    } while (opcion != 0);
+}
+
+
+
+// Programa principal
+int main() {
+    cargarDiccionario();
+    menu();
+    return 0;
+}
